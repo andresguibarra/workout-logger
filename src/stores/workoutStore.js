@@ -7,9 +7,14 @@ export const useWorkoutStore = defineStore('workout', () => {
   
   // Load workouts from localStorage on initialization
   const loadWorkouts = () => {
-    const stored = localStorage.getItem('workouts')
-    if (stored) {
-      workouts.value = JSON.parse(stored)
+    try {
+      const stored = localStorage.getItem('workouts')
+      if (stored) {
+        workouts.value = JSON.parse(stored)
+      }
+    } catch (error) {
+      console.error('Error loading workouts from localStorage:', error)
+      workouts.value = []
     }
   }
   
@@ -28,7 +33,7 @@ export const useWorkoutStore = defineStore('workout', () => {
   // Actions
   const addWorkout = (workout) => {
     const newWorkout = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       ...workout,
       createdAt: new Date().toISOString()
     }
